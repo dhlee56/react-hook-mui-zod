@@ -1,10 +1,13 @@
-import { useForm, useFormContext } from 'react-hook-form'
-import {Autocomplete, Stack, TextField} from '@mui/material'
-import { schema, Schema } from '../types/schema'
-import { zodResolver} from '@hookform/resolvers/zod'
+import {useFormContext } from 'react-hook-form'
+import {Stack, TextField} from '@mui/material'
+import {Schema } from '../types/schema'
 import { RHFAutocomplete } from '../../components/RHFAutocomplete'
+import { useLanguages, useStates } from '../services/queries'
+import { RHFToggleButtonGroup } from '../../components/RHFToggleButtonGroup'
 
 export function Users() {
+    const statesQuery = useStates()
+    const languagesQuery = useLanguages()
     const { register, formState: {errors} } = useFormContext<Schema>()
     return(
         <Stack sx={{gap: 2}}>
@@ -18,11 +21,9 @@ export function Users() {
                 options={[{id: '1', label: 'Texas'}]} 
                 renderInput={(params) => <TextField {...params} label="states"/>}/> */}
             <RHFAutocomplete<Schema> name="states" label="States" options={
-                [
-                    {id: "1", label: "California"},
-                    {id: "2", label: "Texas"}
-                ]
+                statesQuery.data
             }/>
+            <RHFToggleButtonGroup<Schema> name="languagesSpoken" options={languagesQuery.data}/>
         </Stack>
     ) 
 }
